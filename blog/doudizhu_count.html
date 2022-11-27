@@ -1,0 +1,119 @@
+<html>
+<head>  
+ <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript">
+ </script>
+</head>
+<body>
+<font size="3" face="times" color="black">
+
+<i>Dou Dizhu</i> is a popular card game in China. 
+The normal version of Dou Dizhu is a three-player imperfect information game, where each player are dealt with cards from a standard 54-card deck (including two Jokers).
+<br>
+One of the three players will be Dizhu (meaning landlord) and will utimately have 20 cards at the end of the bidding phase.
+The rest two are called farmers who will have 17 cards each.
+A game ends if a player had played all of its cards, given several categories of playable hands.
+<br>
+I found the most complex and confusing category of playable hands to be <i>airplane with solo</i>. 
+Here my goal is to calculate the total number of possible combinations of such hands.
+The game rules/properties that are relevant:
+<ul>
+  <li><i>Suits do not matter</i> in this game. So from now on I will treat all cards of the same rank equivalently. This entails that the numbers of cards for each rank become the only relevant information.</li>
+  <li>The "Rocket" category (two Jokers) and the "Bomb" category (four-of-a-rank) predominate over all other categories. (Rocket domaintes all bombs, and within bombs the card ranks decide the order).</li>
+  <li>During a trick a player (except the first one) can only play the hands of higher rank within the same category of the previous plays.</li>
+  <li>For some categories, there will be a <i>primal</i> and a <i>secondary</i> components of the hand. To compare two hands of the same category, it will be based a lexicographical order defined by (primal, secondary). Lexicographical orders are also usually defined for both primal and secondary.</li>
+  <li>The order for solo cards are ColoredJoker>BlackWhiteJoker>2>A>K>Q>J>10>9...>4>3. So there are 15 different solo ranks possible. However for categories that involve <i>consecutive</i> components, 2-s and Jokers are forbidden. For example, 3-4-5-6-7 is playable, while J-Q-K-A-2 is not.</li>
+</ul>
+
+
+<h3>Definition</h3>
+Accroding to <a href="https://en.wikipedia.org/wiki/Dou_dizhu">Wikipedia</a>, an airplane with solo combination is "\(\ge\) Two consecutive trios with each carries a distinct individual card as the kicker".
+<br>
+For example, it says the hand 3-3-3-4-4-4 + 5-6 is the lowerest rank of the shortest chain length (2 consecutive trios). While 10-10-10-J-J-J-Q-Q-Q-K-K-K-A-A-A + 7-8-9-2-colored joker is the highest rank of the longest chain possible (since the maximum number of hands a player can have is 20).
+<br>
+Also it worth pointing out that the order among the solo cards does not matter: 3-3-3-4-4-4 + 5-6 and 3-3-3-4-4-4 + 6-5 are the same, so it really didn't specify which trio "carries" which solo card.
+<br>
+These seem to give us enough information to compute the answer. And let me start with the simplest case where only two consecutive trios are considered.
+
+<h3>Two consecutive trios</h3>
+It can be seen that there are 11 different consecutive trios of length 2 under the game rules (from 333-444 to KKK-AAA). Denote the trio-variable to be BBB-CCC.
+Now let us consider the two solo cards. There are two cases: the two solo cards form the pattern \(\{X, Y\}\) or \(\{X, X\}\).
+<br>
+The first question is: can \(X\) or \(Y\) be one of B or C? If so then it will make it a <i>Bomb</i> inside the pattern. 
+Since we mentioned that Bomb domaintes all other categories except Rocket, it seems pretty odd to "contain a Bomb inside a airplane", isn't it? 
+Well, one can argue that it will play more cards (8 cards at least) than a bomb (4). 
+However, notice that by playing so it eliminates the possibilities of playing a bomb in a future trick! 
+Since a bomb is very likely to make you the winner of a trick, this may sound a bigger loss in the long run. 
+So, here I will assume that \(X\) or \(Y\) cannot be one of A or B. 
+Following the same reasoning, \(\{X, Y\}\) cannot be \(\{ColoredJoker, BlackWhiteJoker\}\).
+And I asked a few people around: it seems that this is standard custom, so I will assume this pattern holds in the rest of my computation.
+
+<br>
+Therefore, given a consecutive trios of length 2, there are \(\binom{13}{2}-1\) possible \(\{X, Y\}\), since we should subtract the 2 different ranks within the trios out of the 15. 
+And we should also subtract the case where \(\{X, Y\}=\{ColoredJoker, BlackWhiteJoker\}\).
+<br>
+For pattern \(\{X, X\}\), there are 11 possibilities, since 2 of the 13 ranks (excluding Jokers) had already been taken by the trios.
+<br>
+Therefore, the number of possible combinations for consecutive trios of length 2 is
+
+
+
+\[ 11\times\left(\binom{13}{2}-1+11\right)=968\]
+
+
+<h3>Three consecutive trios</h3>
+Following the same reasoning, we can see there are 10 different BBB-CCC-DDD.
+<br>
+For pattern \(X, Y, Z\), there are \(\binom{12}{3}-10\) possibilities, where in \(-10\) we eliminate the cases of \(\{X, ColoredJoker, BlackWhiteJoker\}\).
+<br>
+For pattern \(\{X, X, Y\}\), there are \(10\times 11\), where 10 corresponds to if we first enumerate \(X\) (exclude Jokers) and 11 corresponds to then we enumerate \(Y\) (including Jokers).
+<br>
+Now here comes the tricky part: do we consider pattern \(\{X, X, X\}\)? For example if we play 333-444-555-7-7-7, that probably should be acceptable. 
+Although playing 7-7-7 as the carried cards looks like a waste, if 7-7-7 is the only cards remaining, why not play it?
+<br>
+However, how about 333-444-555-6-6-6? Now here is a confusion: we can actually also interpret it as 444-555-666-3-3-3. Furthermore, it can also be interpreted as the TrioChain category: 333-444-555-666.
+<br>
+Now, in real human plays, people can definitely resolve the confusion by explicitly saying which ones they want to play. 
+However if we were to write a computer program, some pre-determined tie-breaking rules should be established.
+In the few computer Dou Dizhu programs I examined on (with graphical interfaces), they tends to interpret it as 333-444-555-666 if it were first played in a trick.
+And if it is played during the middle of a trick, it will be interpreted to the highest rank possible.
+Following which rule will affect the final counting answer I am tring to solve.
+<br>
+After asking around and some thinking process, I decide to follow the human custom: I will treat 333-444-555-6-6-6 and 444-555-666-3-3-3 as two different actions.
+And that means within the computer program they should be mapped onto different action IDs.
+<br>
+Then, for pattern \(\{X, X, X\}\), there should be 10 possibilities, after excluding the three ranks in the airplane and the two Jokers.
+That makes the answer for this part
+
+\[ 10\times \left(\binom{12}{3}-10+10\times 11+10\right)=3300\]
+
+
+
+<h3>Four consecutive trios</h3>
+My calculation from now on becomes much more obvious. 
+It can be checked there are 9 different BBB-CCC-DDD-EEE. And we should examine patterns \(\{X, Y, Z, W\}\), \(\{X, X, Y, Z\}\), \(\{X, X, Y, Y\}\) and \(\{X, X, X, Y\}\).
+<br>
+My answer for this part is
+\[ 9\times \left(\binom{11}{4}-\binom{9}{2}+\binom{9}{1}\cdot\left(\binom{10}{2}-1\right)+\binom{9}{2}+9\times10\right)=7344\]
+Where each terms within the most outer bracket corresponds to each patterns.
+
+<h3>Finally, five consecutive trios</h3>
+The patterns are \(\{X, Y, Z, W, V\}\), \(\{X, X, Y, Z, W\}\), \(\{X, X, Y, Y, Z\}\), \(\{X, X, X, Y, Z\}\) and \(\{X, X, X, Y, Y\}\).
+My answer is
+\[ 8\times\left(\binom{10}{5}-\binom{8}{3}+8\times\left(\binom{9}{3}-\binom{7}{1}\right)+\binom{8}{2}\times\binom{8}{1}+\binom{8}{1}\times\left(\binom{9}{2}-1+\binom{7}{1}\right)\right)=10976\]
+<br>
+
+<h3>The answer</h3>
+Finally, taking all up together, the answer is
+\[ 968+3300+7344+10976=22588\]
+
+
+<h3>Disclaimer</h3>
+The only reference I have found online is the <a href="https://rlcard.org/games.html#dou-dizhu"> table listed in the RLCard library</a>, where it says the number should be 21822.
+The other numbers match with my calculation.
+While I will contact the RLCard authors for confirmation, I also welcome if anyone find any errors in my calculation!
+<br>
+<br>
+<i>Last updated by Zun Li on 11/27/2022</i>
+</font>
+</body>
+</html>
