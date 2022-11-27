@@ -15,12 +15,12 @@ A game ends if a player had played all of its cards, given several categories of
 <br>
 I found the most complex and confusing category of playable hands to be <i>airplane with solo</i>. 
 Here my goal is to calculate the total number of possible combinations of such hands.
-The game rules/properties that are relevant:
+The relevant game rules/properties are:
 <ul>
   <li><i>Suits do not matter</i> in this game. So from now on I will treat all cards of the same rank equivalently. This entails that the numbers of cards for each rank become the only relevant information.</li>
   <li>The "Rocket" category (two Jokers) and the "Bomb" category (four-of-a-rank) predominate over all other categories. (Rocket domaintes all bombs, and within bombs the card ranks decide the order).</li>
   <li>During a trick a player (except the first one) can only play the hands of higher rank within the same category of the previous plays.</li>
-  <li>For some categories, there will be a <i>primal</i> and a <i>secondary</i> components of the hand. To compare two hands of the same category, it will be based a lexicographical order defined by (primal, secondary). Lexicographical orders are also usually defined for both primal and secondary.</li>
+  <li>For some categories, there will be a <i>primal</i> and a <i>secondary</i> components of the hand. To compare two hands of the same category, it will be based only on the order of primals.</li>
   <li>The order for solo cards are ColoredJoker>BlackWhiteJoker>2>A>K>Q>J>10>9...>4>3. So there are 15 different solo ranks possible. However for categories that involve <i>consecutive</i> components, 2-s and Jokers are forbidden. For example, 3-4-5-6-7 is playable, while J-Q-K-A-2 is not.</li>
 </ul>
 
@@ -29,9 +29,17 @@ The game rules/properties that are relevant:
 Accroding to <a href="https://en.wikipedia.org/wiki/Dou_dizhu">Wikipedia</a>, an airplane with solo combination is "\(\ge\) Two consecutive trios with each carries a distinct individual card as the kicker".
 <br>
 For example, it says the hand 3-3-3-4-4-4 + 5-6 is the lowerest rank of the shortest chain length (2 consecutive trios). While 10-10-10-J-J-J-Q-Q-Q-K-K-K-A-A-A + 7-8-9-2-colored joker is the highest rank of the longest chain possible (since the maximum number of hands a player can have is 20).
+Here the consecutive parts are the primals while the kickers are the secondaries.
 <br>
 Also it worth pointing out that the order among the solo cards does not matter: 3-3-3-4-4-4 + 5-6 and 3-3-3-4-4-4 + 6-5 are the same, so it really didn't specify which trio "carries" which solo card.
 <br>
+However, Wikipedia also suggests that pair cannot be kickers. For example, 3-3-3-4-4-4 + 5-5 is not allowed under this rule.
+This contradicts to the local playing custom I am familaring with.
+And also to make my calculation more fun, I will use the following rule for computing the answer:
+<ul>
+  <li> Pair can be kickers.
+</ul>
+
 These seem to give us enough information to compute the answer. And let me start with the simplest case where only two consecutive trios are considered.
 
 <h3>Two consecutive trios</h3>
@@ -97,7 +105,7 @@ My answer for this part is
 Where each terms within the most outer bracket corresponds to each patterns.
 
 <h3>Finally, five consecutive trios</h3>
-The patterns are \(\{X, Y, Z, W, V\}\), \(\{X, X, Y, Z, W\}\), \(\{X, X, Y, Y, Z\}\), \(\{X, X, X, Y, Z\}\) and \(\{X, X, X, Y, Y\}\).
+The patterns for kickers are \(\{X, Y, Z, W, V\}\), \(\{X, X, Y, Z, W\}\), \(\{X, X, Y, Y, Z\}\), \(\{X, X, X, Y, Z\}\) and \(\{X, X, X, Y, Y\}\).
 My answer is
 \[ 8\times\left(\binom{10}{5}-\binom{8}{3}+8\times\left(\binom{9}{3}-\binom{7}{1}\right)+\binom{8}{2}\times\binom{8}{1}+\binom{8}{1}\times\left(\binom{9}{2}-1+\binom{7}{1}\right)\right)=10976\]
 <br>
@@ -107,10 +115,23 @@ Finally, taking all up together, the answer is
 \[ 968+3300+7344+10976=22588\]
 
 
-<h3>Disclaimer</h3>
+<h3>Summary and Disclaimer</h3>
+In summary, the tie-breaking rules I am adoting are
+<ul>
+  <li>Rocket/Bombs patterns cannot appear in other categories.</li>
+  <li>333-444-555-6-6-6, 444-555-666-3-3-3, 333-444-555-666 are all different actions.</li>
+</ul>
+
+And there is one more rule that is different from what <a href="https://en.wikipedia.org/wiki/Dou_dizhu">Wikipedia</a> described:
+<ul>
+  <li>Pairs and trios can be kickers, as long as they do not violate other rules.</li>
+</ul>
+
+
+This by no means is the only true answer; using different tie-breaking rules will lead to different numbers.
 The only reference I have found online is the <a href="https://rlcard.org/games.html#dou-dizhu"> table listed in the RLCard library</a>, where it says the number should be 21822.
 The other numbers match with my calculation.
-While I will contact the RLCard authors for confirmation, I also welcome if anyone find any errors in my calculation!
+While I will contact the RLCard authors to confirm which custom they are using, I also welcome if anyone find any errors in my calculation!
 <br>
 <br>
 <i>Last updated by Zun Li on 11/27/2022</i>
