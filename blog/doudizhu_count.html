@@ -131,7 +131,12 @@ And there is one more rule that is different from what <a href="https://en.wikip
 This by no means is the only true answer; using different tie-breaking rules will lead to different numbers.
 The only reference I have found online is the <a href="https://rlcard.org/games.html#dou-dizhu"> table listed in the RLCard library</a>, where it says the number should be 21822.
 The other numbers match with my calculation.
-While I will contact the RLCard authors to confirm which custom they are using, I also welcome if anyone find any errors in my calculation!
+After contacting with the authors, I found the only difference is that they prohibit cases like 333-444-555-6-6-6.
+One can check there are 
+\[ 9\times 2+8\times2\times10+7\times2\times\left(\binom{9}{2}-1+\binom{7}{1}\right)=766\]
+such cases. And 22588-766=21822.
+I would argue it is more reasonable to allow these cases.
+Because since we already allow 333-444-555-7-7-7, why not 333-444-555-6-6-6? 
 <br>
 <br>
 <i>Last updated by Zun Li on 11/27/2022</i>
