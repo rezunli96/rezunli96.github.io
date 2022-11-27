@@ -7,7 +7,7 @@
 <font size="3" face="times" color="black">
 
 <i>Dou Dizhu</i> is a popular card game in China. 
-The normal version of Dou Dizhu is a three-player imperfect information game, where each player are dealt with cards from a standard 54-card deck (including two Jokers).
+The normal version of Dou Dizhu is a three-player imperfect information game, where each player is dealt with cards from a standard 54-card deck (including two Jokers).
 <br>
 One of the three players will be Dizhu (meaning landlord) and will utimately have 20 cards at the end of the bidding phase.
 The rest two are called farmers who will have 17 cards each.
@@ -43,12 +43,12 @@ Since we mentioned that Bomb domaintes all other categories except Rocket, it se
 Well, one can argue that it will play more cards (8 cards at least) than a bomb (4). 
 However, notice that by playing so it eliminates the possibilities of playing a bomb in a future trick! 
 Since a bomb is very likely to make you the winner of a trick, this may sound a bigger loss in the long run. 
-So, here I will assume that \(X\) or \(Y\) cannot be one of A or B. 
+So, here I will assume that \(X\) or \(Y\) cannot be one of B or C. 
 Following the same reasoning, \(\{X, Y\}\) cannot be \(\{ColoredJoker, BlackWhiteJoker\}\).
 And I asked a few people around: it seems that this is standard custom, so I will assume this pattern holds in the rest of my computation.
 
 <br>
-Therefore, given a consecutive trios of length 2, there are \(\binom{13}{2}-1\) possible \(\{X, Y\}\), since we should subtract the 2 different ranks within the trios out of the 15. 
+Therefore, given a consecutive trios of length 2, there are \(\binom{13}{2}-1\) possible \(\{X, Y\}\). This is because we should subtract the 2 different ranks within the trios out of the 15. 
 And we should also subtract the case where \(\{X, Y\}=\{ColoredJoker, BlackWhiteJoker\}\).
 <br>
 For pattern \(\{X, X\}\), there are 11 possibilities, since 2 of the 13 ranks (excluding Jokers) had already been taken by the trios.
@@ -63,18 +63,18 @@ Therefore, the number of possible combinations for consecutive trios of length 2
 <h3>Three consecutive trios</h3>
 Following the same reasoning, we can see there are 10 different BBB-CCC-DDD.
 <br>
-For pattern \(X, Y, Z\), there are \(\binom{12}{3}-10\) possibilities, where in \(-10\) we eliminate the cases of \(\{X, ColoredJoker, BlackWhiteJoker\}\).
+For pattern \(\{X, Y, Z\}\), there are \(\binom{12}{3}-10\) possibilities, where in \(-10\) we eliminate the cases of \(\{X, ColoredJoker, BlackWhiteJoker\}\).
 <br>
 For pattern \(\{X, X, Y\}\), there are \(10\times 11\), where 10 corresponds to if we first enumerate \(X\) (exclude Jokers) and 11 corresponds to then we enumerate \(Y\) (including Jokers).
 <br>
-Now here comes the tricky part: do we consider pattern \(\{X, X, X\}\)? For example if we play 333-444-555-7-7-7, that probably should be acceptable. 
+Now here comes the tricky part: do we need to consider pattern \(\{X, X, X\}\)? For example if we play 333-444-555-7-7-7, that probably should be acceptable. 
 Although playing 7-7-7 as the carried cards looks like a waste, if 7-7-7 is the only cards remaining, why not play it?
 <br>
 However, how about 333-444-555-6-6-6? Now here is a confusion: we can actually also interpret it as 444-555-666-3-3-3. Furthermore, it can also be interpreted as the TrioChain category: 333-444-555-666.
 <br>
 Now, in real human plays, people can definitely resolve the confusion by explicitly saying which ones they want to play. 
 However if we were to write a computer program, some pre-determined tie-breaking rules should be established.
-In the few computer Dou Dizhu programs I examined on (with graphical interfaces), they tends to interpret it as 333-444-555-666 if it were first played in a trick.
+In the few computer Dou Dizhu programs I examined on (with graphical interfaces), they tends to interpret it as 333-444-555-666 if it was first played in a trick.
 And if it is played during the middle of a trick, it will be interpreted to the highest rank possible.
 Following which rule will affect the final counting answer I am tring to solve.
 <br>
