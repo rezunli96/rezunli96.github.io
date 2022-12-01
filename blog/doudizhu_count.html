@@ -75,19 +75,30 @@ For pattern \(\{X, Y, Z\}\), there are \(\binom{12}{3}-10\) possibilities, where
 <br>
 For pattern \(\{X, X, Y\}\), there are \(10\times 11\), where 10 corresponds to if we first enumerate \(X\) (exclude Jokers) and 11 corresponds to then we enumerate \(Y\) (including Jokers).
 <br>
-Now here comes the tricky part: do we need to consider pattern \(\{X, X, X\}\)? For example if we play 333-444-555-7-7-7, that probably should be acceptable. 
-Although playing 7-7-7 as the carried cards looks like a waste, if 7-7-7 is the only cards remaining, why not play it?
+Now here comes the tricky part: do we need to consider pattern \(\{X, X, X\}\)? For example if we play 666-777-888-A-A-A, that probably should be acceptable. 
+Although playing A-A-A as the carried cards looks like a waste, if A-A-A are the only cards remaining, why not playing it?
 <br>
-However, how about 333-444-555-6-6-6? Now here is a confusion: we can actually also interpret it as 444-555-666-3-3-3. Furthermore, it can also be interpreted as the TrioChain category: 333-444-555-666.
+However, how about 666-777-888-9-9-9? Now here is a confusion: we can actually also interpret it as 777-888-999-6-6-6. Furthermore, it can also be interpreted as the TrioChain category: 666-777-888-999.
 <br>
 Now, in real human plays, people can definitely resolve the confusion by explicitly saying which ones they want to play. 
 However if we were to write a computer program, some pre-determined tie-breaking rules should be established.
-In the few computer Dou Dizhu programs I examined on (with graphical interfaces), they tends to interpret it as 333-444-555-666 if it was first played in a trick.
-And if it is played during the middle of a trick, it will be interpreted to the highest rank possible.
-Following which rule will affect the final counting answer I am tring to solve.
+In the few computer Dou Dizhu programs I examined on (with graphical interfaces), they tends to interpret it as 666-777-888-999 if it was first played in a trick.
+But if it is played during the middle of a trick and the previous plays were airplane + solo, it is unclear which one it was interpreted to.
 <br>
-After asking around and some thinking process, I decide to follow the human custom: I will treat 333-444-555-6-6-6 and 444-555-666-3-3-3 as two different actions.
-And that means within the computer program they should be mapped onto different action IDs.
+However, if you think about it, 666-777-888-9-9-9 and 777-888-999-6-6-6 are strategically equivalent during the middle of a trick: the hands that <i>can beat either of them</i> must at least start with three 10s, and the hands that <i>either of them can beat</i> must be the airplanes with 333-444-555.
+That means, if one develops a Dou Dizhu AI, it probably should learn that these two actions always have the same value.
+<br>
+So, are we going to view 666-777-888-9-9-9 and 777-888-999-6-6-6 as the same primitive action?
+Well, I would argue that depends on the endgoal of you application.
+If you are going to build an effective AI bot: sure, incorporating such inductive biases typically will speed up the learning process.
+In fact, such technique is called <i>action abstraction</i> which was widely adopted in computer poker research.
+<br>
+However, if you are going to implement a game engine: probably not. You should still treat them as two different primitive actions.
+Although they are <i>strategically equivalent</i>, they are still <i>semantically different</i> which is directly entailed from the game rules.
+The fact that they always have the same value is a result of a reasoning process, instead of a ruleset.
+<br>
+For my computation, I decide to treat 666-777-888-9-9-9 and 777-888-999-6-6-6 as <b>different</b> primitive actions, while both are different from the TrioChain action 666-777-888-999.
+And that means within the computer program 666-777-888-9-9-9, 777-888-999-6-6-6 and 666-777-888-999 should all be mapped onto different action IDs.
 <br>
 Then, for pattern \(\{X, X, X\}\), there should be 10 possibilities, after excluding the three ranks in the airplane and the two Jokers.
 That makes the answer for this part
@@ -139,7 +150,7 @@ I would argue it is more reasonable to allow these cases.
 Because since we already allow 333-444-555-7-7-7, why not 333-444-555-6-6-6? 
 <br>
 <br>
-<i>Last updated by Zun Li on 11/27/2022</i>
+<i>Last updated by Zun Li on 11/30/2022</i>
 </font>
 </body>
 </html>
